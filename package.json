@@ -1,0 +1,23 @@
+{
+  "name": "03-middleware",
+  "version": "1.0.0",
+  "description": "ExpressJS Middleware",
+  "keywords": [
+    "ExpressJS"
+  ],
+  "license": "ISC",
+  "author": "CodeRonin",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --env-file=.env src/app.js",
+    "start": "node --env-file-if-exists=.env src/app.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
