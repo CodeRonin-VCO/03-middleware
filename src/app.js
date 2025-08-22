@@ -1,5 +1,7 @@
 import express from "express";
 import appRouter from "./routers/app.router.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // ==== Variables ====
 const app = express();
@@ -12,13 +14,14 @@ app.use((req, res, next) => {
     const method = req.method;
     const isoDate = new Date().toISOString();
     const startTime = new Date();
-
+    
     next();
-
+    
     const end = new Date();
     const timeGap = end.getTime() - startTime.getTime();
     const status = res.statusCode;
-
+    
+    console.log();
     console.log(`Mon url : ${url}`);
     console.log(`Ma méthode : ${method}`);
     console.log(`La date de la requête sous format ISO : ${isoDate}`);
@@ -32,7 +35,7 @@ app.use((req, res, next) => {
 
     const pagination = {
         offset: isNaN(offset) ? 0 : parseInt(offset),
-        limit: isNaN(limit) ? 10 : limit
+        limit: isNaN(limit) ? 10 : parseInt(limit)
     }
 
     req.pagination = pagination;
@@ -40,13 +43,19 @@ app.use((req, res, next) => {
     next();
 })
 
+// ---- Afficher les images du dossier public ----
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, "public")));
+
 
 // ==== Accès standard aux routes ====
 app.use("/middleware", appRouter);
 
 // ==== Middleware Error ====
 app.use((error, req, res, next) => {
-    console.log(`${error}`);
+    console.log('Erreur : ' + error.cause);
+
     if (NODE_ENV === "dev") {
         res.status(500)
             .json({
@@ -56,11 +65,11 @@ app.use((error, req, res, next) => {
             })
     } else {
         res.status(500).json({
-            message: `Une erreur s'est produite. Type d'erreur : ${error.name}`
+            message: `Une erreur s'est produite en production. Type d'erreur : ${error.name}`
         })
     }
 
-    next(error);
+    // next(error)
 })
 
 // ==== Serveur ====
